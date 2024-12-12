@@ -81,7 +81,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
                 setState(() {
                   tab0 = true;
                   tab1 = false;
-                  userInfo.write("tempAccountType", "performer");
+                  userInfo.write("accountType", "performer");
                 });
               }),
               SizedBox(height: size.height * 0.02),
@@ -95,7 +95,7 @@ class _WhoAreYouState extends State<WhoAreYou> {
                 setState(() {
                   tab0 = false;
                   tab1 = true;
-                  userInfo.write("tempAccountType", "client");
+                  userInfo.write("accountType", "client");
                 });
               }),
             ],

@@ -108,7 +108,6 @@ class InputFieldA extends StatefulWidget {
   final double width;
   final String title;
   final bool enabled;
-  final Widget hintIcon;
   final Iterable<String> autoFillHint;
   const InputFieldA({
     Key? key,
@@ -116,7 +115,6 @@ class InputFieldA extends StatefulWidget {
     required this.width,
     required this.title,
     required this.enabled,
-    required this.hintIcon,
     required this.autoFillHint,
   }) : super(key: key);
 
@@ -127,7 +125,7 @@ class InputFieldA extends StatefulWidget {
 class _InputFieldAState extends State<InputFieldA> {
   @override
   Widget build(BuildContext context) {
-    return TextFieldContainer2(
+    return TextFieldContainer(
       width: widget.width,
       child: TextFormField(
         textInputAction: TextInputAction.go,
@@ -135,7 +133,11 @@ class _InputFieldAState extends State<InputFieldA> {
         keyboardType: TextInputType.text,
         autofillHints: widget.autoFillHint,
         enabled: widget.enabled,
-        validator: (value) => value!.isEmpty ? "required!" : null,
+        validator: (value) => value!.isEmpty
+            ? "required!"
+            : value.length > 28
+                ? "Exceeded maximum characters permitted!"
+                : null,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         cursorColor: constantValues.primaryColor,
         style: GoogleFonts.archivo(
@@ -144,7 +146,6 @@ class _InputFieldAState extends State<InputFieldA> {
                     ? constantValues.whiteColor2
                     : constantValues.darkColor2)),
         decoration: InputDecoration(
-          prefixIcon: widget.hintIcon,
           hintText: widget.title,
           hintStyle: GoogleFonts.archivo(textStyle: const TextStyle()),
           border: InputBorder.none,
@@ -213,6 +214,157 @@ class _InputFieldBState extends State<InputFieldB> {
                     : constantValues.darkColor)),
         decoration: InputDecoration(
           hintText: widget.title,
+          hintStyle: GoogleFonts.archivo(textStyle: const TextStyle()),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}
+
+class PhoneNumberField extends StatefulWidget {
+  final TextEditingController controller;
+  final double width;
+  final String title;
+  late int maxDigits;
+  late bool enabled;
+  PhoneNumberField({
+    Key? key,
+    required this.controller,
+    required this.width,
+    required this.title,
+    required this.maxDigits,
+    required this.enabled,
+  }) : super(key: key);
+
+  @override
+  State<PhoneNumberField> createState() => _PhoneNumberFieldState();
+}
+
+class _PhoneNumberFieldState extends State<PhoneNumberField> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFieldContainer2(
+      width: widget.width,
+      child: TextFormField(
+        textInputAction: TextInputAction.go,
+        controller: widget.controller,
+        keyboardType: TextInputType.phone,
+        maxLength: widget.maxDigits,
+        autofillHints: const [AutofillHints.telephoneNumber],
+        enabled: widget.enabled,
+        validator: (value) => value!.isNotEmpty
+            ? !value.isNum
+                ? "Invalid phone number!"
+                : widget.maxDigits < 7
+                    ? "Select your country of residence!"
+                    : value.length > widget.maxDigits
+                        ? "Phone number can't exceed ${widget.maxDigits}!"
+                        : null
+            : "required!",
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        cursorColor: constantValues.primaryColor,
+        decoration: InputDecoration(
+          hintText: widget.title,
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}
+
+class InputFieldC extends StatefulWidget {
+  final TextEditingController controller;
+  final double width;
+  final int maxLines;
+  final String title;
+  final bool isBio;
+  final Iterable<String> autoFillHint;
+  const InputFieldC({
+    Key? key,
+    required this.controller,
+    required this.width,
+    required this.maxLines,
+    required this.title,
+    required this.isBio,
+    required this.autoFillHint,
+  }) : super(key: key);
+
+  @override
+  State<InputFieldC> createState() => _InputFieldCState();
+}
+
+class _InputFieldCState extends State<InputFieldC> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFieldContainer(
+      width: widget.width,
+      child: TextFormField(
+        textInputAction: TextInputAction.go,
+        controller: widget.controller,
+        keyboardType: widget.isBio
+            ? TextInputType.multiline
+            : TextInputType.streetAddress,
+        autofillHints: widget.isBio ? null : widget.autoFillHint,
+        maxLines: widget.maxLines,
+        validator: (value) => value!.isEmpty ? "required!" : null,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        cursorColor: constantValues.primaryColor,
+        style: GoogleFonts.archivo(
+            textStyle: TextStyle(
+                color: userInfo.read("isDarkTheme")
+                    ? constantValues.whiteColor2
+                    : constantValues.darkColor2)),
+        decoration: InputDecoration(
+          hintText: widget.title,
+          hintStyle: GoogleFonts.archivo(textStyle: const TextStyle()),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}
+
+
+class InputFieldD extends StatefulWidget {
+  final TextEditingController controller;
+  final double width;
+  final String title;
+  final bool enabled;
+  const InputFieldD({
+    Key? key,
+    required this.controller,
+    required this.width,
+    required this.title,
+    required this.enabled,
+  }) : super(key: key);
+
+  @override
+  State<InputFieldD> createState() => _InputFieldDState();
+}
+
+class _InputFieldDState extends State<InputFieldD> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFieldContainer(
+      width: widget.width,
+      child: TextFormField(
+        textInputAction: TextInputAction.go,
+        controller: widget.controller,
+        keyboardType: TextInputType.text,
+        enabled: widget.enabled,
+        validator: (value) => value!.isEmpty
+            ? "required!"
+            : null,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        cursorColor: constantValues.primaryColor,
+        style: GoogleFonts.archivo(
+            textStyle: TextStyle(
+                color: userInfo.read("isDarkTheme")
+                    ? constantValues.whiteColor2
+                    : constantValues.darkColor2)),
+        decoration: InputDecoration(
+          labelText: widget.title,
           hintStyle: GoogleFonts.archivo(textStyle: const TextStyle()),
           border: InputBorder.none,
         ),

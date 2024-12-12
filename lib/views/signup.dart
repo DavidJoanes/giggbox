@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:giggbox/views/signup01.dart';
 import 'package:giggbox/views/signup02.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/constants.dart';
 import '../controllers/responsive.dart';
 import '../widgets/buttons.dart';
 import '../widgets/custom_app_bars.dart';
-import '../widgets/custom_snackbar.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -118,12 +118,14 @@ class _SignupState extends State<Signup> {
                                           const Duration(milliseconds: 500),
                                       curve: Curves.easeIn);
                                 } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(agreeToTerms);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      customSnackBar(
+                                          "You must agree to T&C to proceed!"));
                                 }
                               } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(blankFields);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackBar(
+                                        "Credentials cannot be blank!"));
                               }
                             }
                           }),
@@ -175,5 +177,37 @@ class _SignupState extends State<Signup> {
     return const Text("");
   }
 
-  signup() async {}
+  customSnackBar(String message) => SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.info, color: constantValues.whiteColor),
+            const SizedBox(width: 10),
+            Text(message,
+                maxLines: 5,
+                style: GoogleFonts.archivo(
+                    textStyle: TextStyle(
+                        color: constantValues.whiteColor,
+                        fontWeight: FontWeight.w500))),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        showCloseIcon: true,
+        closeIconColor: constantValues.whiteColor,
+        duration: const Duration(seconds: 3),
+        backgroundColor: constantValues.darkColor2,
+      );
+
+  signup() async {
+    if (userInfo.read("accountType") != "") {
+      userInfo.read("performerData")["stageName"] != null
+          ? context.goNamed("performer_profile")
+          : context.goNamed("performer_profile_edit");
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(customSnackBar("Pick a category!"));
+    }
+  }
 }
